@@ -1,0 +1,66 @@
+#!/usr/bin/env ruby -w
+require 'date'
+require 'fileutils'
+
+# OMG PLZ SEND PULL REQUESTS WITH MORE AWESOME MSGS
+messages = [
+  "Speak of the devil, and he shall appear.",
+  "Does it come in black?",
+  "The training is nothing! Will is everything! The will to act.",
+  "I am the League of Shadows.",
+  "I'm Batman",
+  "Didn't you get the memo?",
+  "My anger outweights my guilt.",
+  "Yes. The fire rises.",
+  "It will be extremely painful... for you",
+  "It's ends here.",
+  "Although I'm not ordinary, I'm a citizen.",
+  "I hope you're not a member of the fire brigade.",
+  "It's simple. We, uh, kill the Batman.",
+  "I just want my phone call.",
+  "Bruce... it's okay. Don't be afraid.",
+  "A little the worse for wear, I'm afraid.",
+  "It was a dog. It was a big dog.",
+  "I know exactly who he was. He was the Batman.",
+  "Now choice is yours: exile or death?",
+  "If you're good at something, never do it for free.",
+  "I got another another job. Your.",
+  "Someone like you. Someone who'll rattle the cages.",
+  "I know exactly who he was. He was the Batman.",
+  "Do you want my opinion? You need to lighten up.",
+  "Bruce Wayne, eccentric billionaire.",
+  "Search him. Then I will kill you.",
+  "Your Punishment Must Be More Severe.",
+  "I'm not sure you made it loud enough, sir.",
+  "Do I really look like a guy with a plan?",
+  "Do you feel in charge?",
+  "This isn't a car.",
+  "That's a lovely lovely voice!",
+  "You are in hell, little man. And I am the devil."
+]
+
+rr = "Never gonna give you up Never gonna let you down Never gonna run around and desert you Never gonna make you cry Never gonna say goodbye Never gonna tell a lie and hurt you"
+
+# yay sloppy!
+raise 'plz run from master, kthx' unless `git rev-parse --abbrev-ref HEAD`.strip == 'master'
+start = `git ls-remote https://github.com/FGRibreau/self-worth.git`.strip.match(/([a-z0-9]{40})\trefs\/heads\/genesis/)
+`git reset --hard #{start[1]}`
+
+puts 'Traveling back in time to the founding of Github! (actually, just a year.)'
+i = 0
+Date.today.prev_year.step(Date.today) do |day|
+  str = rr.split(' ')[i % 34]
+  extra = i % 34 == 0 ? "\n" : ' '
+  str = extra << str if i != 0
+
+  File.open('self_worth', 'a') { |f| f.write(str) }
+  File.open('msg', 'w') { |f| f.write(messages.sample) }
+  t = day.to_time + 14400 + rand(57600)
+  system({'GIT_COMMITTER_DATE' => t.to_s, 'GIT_AUTHOR_DATE' => t.to_s}, "git commit -q -F msg -- self_worth")
+  i += 1
+  $stdout.write "\r\033[KProving your worth with commits in #{day.strftime('%B, %Y')}..."
+end
+
+FileUtils.rm 'msg'
+
+puts "\n\nNow show the world you are worth the physical space your body occupies - PUSH TO GITHUB! (`git push origin master`)"
